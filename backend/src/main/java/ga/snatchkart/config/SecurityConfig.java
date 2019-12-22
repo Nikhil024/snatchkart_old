@@ -17,11 +17,13 @@ import org.springframework.security.oauth2.client.web.AuthorizationRequestReposi
 import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import ga.snatchkart.security.*;
-import ga.snatchkart.security.oauth2.CustomOAuth2UserService;
-import ga.snatchkart.security.oauth2.HttpCookieOAuth2AuthorizationRequestRepository;
-import ga.snatchkart.security.oauth2.OAuth2AuthenticationFailureHandler;
-import ga.snatchkart.security.oauth2.OAuth2AuthenticationSuccessHandler;
+import ga.snatchkart.repository.OAuth2AuthorizationRepository;
+import ga.snatchkart.security.filter.RestComponentAuthenticationEntryPoint;
+import ga.snatchkart.security.filter.TokenAuthenticationFilter;
+import ga.snatchkart.security.handlers.OAuth2AuthenticationFailureHandler;
+import ga.snatchkart.security.handlers.OAuth2AuthenticationSuccessHandler;
+import ga.snatchkart.service.impl.OAuth2UserServiceImpl;
+import ga.snatchkart.service.impl.UserDetailsServiceImpl;
 
 @Configuration
 @EnableWebSecurity
@@ -33,10 +35,10 @@ import ga.snatchkart.security.oauth2.OAuth2AuthenticationSuccessHandler;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
-    private CustomUserDetailsService customUserDetailsService;
+    private UserDetailsServiceImpl customUserDetailsService;
 
     @Autowired
-    private CustomOAuth2UserService customOAuth2UserService;
+    private OAuth2UserServiceImpl customOAuth2UserService;
 
     @Autowired
     private OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
@@ -45,7 +47,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
 
     @Autowired
-    private HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
+    private OAuth2AuthorizationRepository httpCookieOAuth2AuthorizationRequestRepository;
 
     @Bean
     public TokenAuthenticationFilter tokenAuthenticationFilter() {
@@ -58,8 +60,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
       the session. We'll save the request in a Base64 encoded cookie instead.
     */
     @Bean
-    public HttpCookieOAuth2AuthorizationRequestRepository cookieAuthorizationRequestRepository() {
-        return new HttpCookieOAuth2AuthorizationRequestRepository();
+    public OAuth2AuthorizationRepository cookieAuthorizationRequestRepository() {
+        return new OAuth2AuthorizationRepository();
     }
 
     @Override
@@ -96,7 +98,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .httpBasic()
                     .disable()
                 .exceptionHandling()
-                    .authenticationEntryPoint(new RestAuthenticationEntryPoint())
+                    .authenticationEntryPoint(new RestComponentAuthenticationEntryPoint())
                     .and()
                 .authorizeRequests()
                     .antMatchers("/",

@@ -1,4 +1,4 @@
-package ga.snatchkart.security;
+package ga.snatchkart.service.impl;
 
 import io.jsonwebtoken.*;
 import org.slf4j.Logger;
@@ -7,6 +7,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import ga.snatchkart.config.AppProperties;
+import ga.snatchkart.security.UserPrincipal;
 
 import java.util.Date;
 

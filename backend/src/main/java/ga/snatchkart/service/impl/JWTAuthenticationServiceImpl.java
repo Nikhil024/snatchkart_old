@@ -1,63 +1,62 @@
-package ga.snatchkart.controller;
+package ga.snatchkart.service.impl;
 
-import ga.snatchkart.exception.BadRequestException;
-import ga.snatchkart.model.AuthProvider;
-import ga.snatchkart.model.User;
-import ga.snatchkart.payload.ApiResponse;
-import ga.snatchkart.payload.AuthResponse;
-import ga.snatchkart.payload.LoginRequest;
-import ga.snatchkart.payload.SignUpRequest;
-import ga.snatchkart.repository.UserRepository;
-import ga.snatchkart.security.TokenProvider;
-import ga.snatchkart.springsocial.util.CookieUtils;
+import java.net.URI;
+
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
-import java.net.URI;
+import ga.snatchkart.enumration.AuthProvider;
+import ga.snatchkart.exception.BadRequestException;
+import ga.snatchkart.model.Login;
+import ga.snatchkart.model.SignUp;
+import ga.snatchkart.model.User;
+import ga.snatchkart.payload.ApiResponse;
+import ga.snatchkart.payload.AuthResponse;
+import ga.snatchkart.repository.UserRepository;
+import ga.snatchkart.service.CookieService;
+import ga.snatchkart.service.JWTAuthenticationService;
 
-@RestController
-@RequestMapping("/auth")
-public class AuthController {
+@Service
+public class JWTAuthenticationServiceImpl implements JWTAuthenticationService {
 
 	@Autowired
 	private AuthenticationManager authenticationManager;
-
+	
+	@Autowired
+	private TokenProvider tokenProvider;
+	
 	@Autowired
 	private UserRepository userRepository;
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
-
-	@Autowired
-	private TokenProvider tokenProvider;
-
-	@PostMapping("/login")
-	public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest,
-			HttpServletResponse response) {
-
+	
+	@Override
+	public ResponseEntity<AuthResponse> login(Login loginRequest, HttpServletResponse response) {
+		
 		Authentication authentication = authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
 
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 
 		String token = tokenProvider.createToken(authentication);
-		CookieUtils.addCookie(response, "bearer", token, 100);
-		return ResponseEntity.ok(new AuthResponse(token));
+		CookieService.addCookie(response, "bearer", token, 100);
+		
+		return new ResponseEntity<AuthResponse> (new AuthResponse(token), HttpStatus.OK);
 	}
 
-	@PostMapping("/signup")
-	public ResponseEntity<?> registerUser(@Valid @RequestBody SignUpRequest signUpRequest) {
+	@Override
+	public ResponseEntity<String> signUp(SignUp signUpRequest) {
 		if (userRepository.existsByEmail(signUpRequest.getEmail())) {
 			throw new BadRequestException("Email address already in use.");
 		}
@@ -76,7 +75,7 @@ public class AuthController {
 		URI location = ServletUriComponentsBuilder.fromCurrentContextPath().path("/user/me")
 				.buildAndExpand(result.getId()).toUri();
 
-		return ResponseEntity.created(location).body(new ApiResponse(true, "User registered successfully@"));
+		return new ResponseEntity<String> ("User registered successfully@", HttpStatus.OK);
 	}
 
 }

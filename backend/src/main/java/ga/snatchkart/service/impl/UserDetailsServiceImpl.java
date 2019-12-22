@@ -1,9 +1,10 @@
-package ga.snatchkart.security;
+package ga.snatchkart.service.impl;
 
 
 import ga.snatchkart.exception.ResourceNotFoundException;
 import ga.snatchkart.model.User;
 import ga.snatchkart.repository.UserRepository;
+import ga.snatchkart.security.UserPrincipal;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,12 +13,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-/**
- * Created by rajeevkumarsingh on 02/08/17.
- */
 
 @Service
-public class CustomUserDetailsService implements UserDetailsService {
+public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Autowired
     UserRepository userRepository;

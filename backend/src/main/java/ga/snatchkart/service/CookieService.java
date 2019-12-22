@@ -1,4 +1,4 @@
-package ga.snatchkart.springsocial.util;
+package ga.snatchkart.service;
 
 import org.springframework.util.SerializationUtils;
 import javax.servlet.http.Cookie;
@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.Base64;
 import java.util.Optional;
 
-public class CookieUtils {
+public class CookieService {
 
     public static Optional<Cookie> getCookie(HttpServletRequest request, String name) {
         Cookie[] cookies = request.getCookies();

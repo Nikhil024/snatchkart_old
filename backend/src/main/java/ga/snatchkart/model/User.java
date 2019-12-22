@@ -2,6 +2,7 @@ package ga.snatchkart.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import ga.snatchkart.enumration.AuthProvider;
 import ga.snatchkart.enumration.UserRole;
 import lombok.Data;
 

@@ -1,7 +1,7 @@
-package ga.snatchkart.security.oauth2;
+package ga.snatchkart.service.impl;
 
+import ga.snatchkart.enumration.AuthProvider;
 import ga.snatchkart.exception.OAuth2AuthenticationProcessingException;
-import ga.snatchkart.model.AuthProvider;
 import ga.snatchkart.model.User;
 import ga.snatchkart.repository.UserRepository;
 import ga.snatchkart.security.UserPrincipal;
@@ -21,7 +21,7 @@ import org.springframework.util.StringUtils;
 import java.util.Optional;
 
 @Service
-public class CustomOAuth2UserService extends DefaultOAuth2UserService {
+public class OAuth2UserServiceImpl extends DefaultOAuth2UserService {
 
     @Autowired
     private UserRepository userRepository;

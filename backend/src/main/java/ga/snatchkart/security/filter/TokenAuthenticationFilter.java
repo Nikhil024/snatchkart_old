@@ -1,4 +1,4 @@
-package ga.snatchkart.security;
+package ga.snatchkart.security.filter;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,6 +9,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
+
+import ga.snatchkart.service.impl.TokenProvider;
+import ga.snatchkart.service.impl.UserDetailsServiceImpl;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -22,7 +25,7 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
     private TokenProvider tokenProvider;
 
     @Autowired
-    private CustomUserDetailsService customUserDetailsService;
+    private UserDetailsServiceImpl customUserDetailsService;
 
     private static final Logger logger = LoggerFactory.getLogger(TokenAuthenticationFilter.class);
 

@@ -1,9 +1,10 @@
-package ga.snatchkart.security.oauth2;
+package ga.snatchkart.security.handlers;
 
 import ga.snatchkart.config.AppProperties;
 import ga.snatchkart.exception.BadRequestException;
-import ga.snatchkart.security.TokenProvider;
-import ga.snatchkart.springsocial.util.CookieUtils;
+import ga.snatchkart.repository.OAuth2AuthorizationRepository;
+import ga.snatchkart.service.CookieService;
+import ga.snatchkart.service.impl.TokenProvider;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -15,7 +16,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import static ga.snatchkart.security.oauth2.HttpCookieOAuth2AuthorizationRequestRepository.REDIRECT_URI_PARAM_COOKIE_NAME;
+import static ga.snatchkart.repository.OAuth2AuthorizationRepository.REDIRECT_URI_PARAM_COOKIE_NAME;
 
 import java.io.IOException;
 import java.net.URI;
@@ -28,12 +29,12 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
     private AppProperties appProperties;
 
-    private HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
+    private OAuth2AuthorizationRepository httpCookieOAuth2AuthorizationRequestRepository;
 
 
     @Autowired
     OAuth2AuthenticationSuccessHandler(TokenProvider tokenProvider, AppProperties appProperties,
-                                       HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository) {
+                                       OAuth2AuthorizationRepository httpCookieOAuth2AuthorizationRequestRepository) {
         this.tokenProvider = tokenProvider;
         this.appProperties = appProperties;
         this.httpCookieOAuth2AuthorizationRequestRepository = httpCookieOAuth2AuthorizationRequestRepository;
@@ -53,7 +54,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     }
 
     protected String determineTargetUrl(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
-        Optional<String> redirectUri = CookieUtils.getCookie(request, REDIRECT_URI_PARAM_COOKIE_NAME)
+        Optional<String> redirectUri = CookieService.getCookie(request, REDIRECT_URI_PARAM_COOKIE_NAME)
                 .map(Cookie::getValue);
 
         if(redirectUri.isPresent() && !isAuthorizedRedirectUri(redirectUri.get())) {

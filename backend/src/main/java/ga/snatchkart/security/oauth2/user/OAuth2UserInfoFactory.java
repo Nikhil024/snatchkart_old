@@ -1,7 +1,7 @@
 package ga.snatchkart.security.oauth2.user;
 
+import ga.snatchkart.enumration.AuthProvider;
 import ga.snatchkart.exception.OAuth2AuthenticationProcessingException;
-import ga.snatchkart.model.AuthProvider;
 
 import java.util.Map;
 

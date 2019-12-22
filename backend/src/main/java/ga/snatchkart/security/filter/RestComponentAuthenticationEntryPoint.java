@@ -1,4 +1,4 @@
-package ga.snatchkart.security;
+package ga.snatchkart.security.filter;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,9 +10,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
+public class RestComponentAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
-    private static final Logger logger = LoggerFactory.getLogger(RestAuthenticationEntryPoint.class);
+    private static final Logger logger = LoggerFactory.getLogger(RestComponentAuthenticationEntryPoint.class);
 
     @Override
     public void commence(HttpServletRequest httpServletRequest,

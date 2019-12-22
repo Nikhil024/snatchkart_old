@@ -1,4 +1,4 @@
-package ga.snatchkart.controller;
+package ga.snatchkart.service.impl;
 
 
 import java.net.NetworkInterface;
@@ -13,7 +13,7 @@ import java.util.Enumeration;
  * This class should be used as a Singleton.
  * Make sure that you create and reuse a Single instance of SequenceGenerator per machine in your distributed system cluster.
  */
-public class SequenceGenerator {
+public class SequenceGeneratorServiceImpl {
     private static final int TOTAL_BITS = 64;
     private static final int EPOCH_BITS = 42;
     private static final int MACHINE_ID_BITS = 10;
@@ -31,7 +31,7 @@ public class SequenceGenerator {
     private long sequence = 0L;
 
     // Create Snowflake with a machineId
-    public SequenceGenerator(int machineId) {
+    public SequenceGeneratorServiceImpl(int machineId) {
         if(machineId < 0 || machineId > maxMachineId) {
             throw new IllegalArgumentException(String.format("MachineId must be between %d and %d", 0, maxMachineId));
         }
@@ -39,7 +39,7 @@ public class SequenceGenerator {
     }
 
     // Let Snowflake generate a machineId
-    public SequenceGenerator() {
+    public SequenceGeneratorServiceImpl() {
         this.machineId = createMachineId();
     }
 

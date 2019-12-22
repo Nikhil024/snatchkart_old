@@ -1,12 +1,10 @@
-package ga.snatchkart.payload;
+package ga.snatchkart.model;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
-/**
- * Created by rajeevkumarsingh on 02/08/17.
- */
-public class LoginRequest {
+
+public class Login {
     @NotBlank
     @Email
     private String email;
