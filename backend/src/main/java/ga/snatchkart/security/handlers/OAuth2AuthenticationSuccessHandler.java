@@ -7,6 +7,7 @@ import ga.snatchkart.service.CookieService;
 import ga.snatchkart.service.impl.TokenProvider;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Primary;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
