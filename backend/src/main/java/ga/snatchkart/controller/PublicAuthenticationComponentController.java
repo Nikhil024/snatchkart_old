@@ -16,7 +16,7 @@ import ga.snatchkart.payload.AuthResponse;
 import ga.snatchkart.service.JWTAuthenticationService;
 
 @RestController
-@RequestMapping("/public")
+@RequestMapping("/public/auth")
 public class PublicAuthenticationComponentController {
 
 	@Autowired

@@ -19,6 +19,7 @@ public class PublicProductsComponentController {
 
 	@GetMapping("/all")
 	public List<Product> getAllProducts() {
+		System.out.println("calling!!!!!!");
 		return productService.getAllProducts();
 	}
 

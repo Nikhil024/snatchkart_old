@@ -14,18 +14,23 @@ import org.springframework.web.bind.annotation.RestController;
 
 import ga.snatchkart.model.Product;
 import ga.snatchkart.model.ProductCategory;
+import ga.snatchkart.service.ProductCategoryService;
 import ga.snatchkart.service.ProductService;
 
 @RestController
 @RequestMapping("/secure/products")
-public class SecuredProductsComponenetController {
+public class ProtectedProductsComponentController {
 
 	@Autowired
 	private ProductService productService;
 
+	@Autowired
+	private ProductCategoryService productCategoryService;
+
 	@PutMapping("/save")
 	public ResponseEntity<String> saveAllProducts() {
 		List<Product> product = new ArrayList<>();
+		List<ProductCategory> productCategories = new ArrayList<>();
 
 		product.add(new Product("Samsung Galaxy Note 8", 64000D, new ProductCategory("SMG-8", LocalDateTime.now()),
 				"SMG-8", true, 30000D, true, 10L, LocalDateTime.now(), LocalDateTime.now()));
@@ -43,7 +48,10 @@ public class SecuredProductsComponenetController {
 				"SMG-14", false, null, false, 10L, LocalDateTime.now(), LocalDateTime.now()));
 
 		try {
-			product.forEach(System.out::println);
+			product.forEach(products -> {
+				productCategories.add(products.getProductCategory());
+			});
+			productCategoryService.saveAllProductCategories(productCategories);
 			productService.saveAllProducts(product);
 			return new ResponseEntity<String>("Added Products", HttpStatus.OK);
 		} catch (DuplicateKeyException de) {
