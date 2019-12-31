@@ -25,7 +25,7 @@ public class Product implements Serializable {
 	@NotNull
 	private ProductCategory productCategory;
 	@NotNull
-	@Indexed(unique = true)
+	@Indexed(unique = true, sparse = true)
 	private String sku;
 	private Boolean inOffer;
 	private Double offerPrice;

@@ -1,110 +1,28 @@
 package ga.snatchkart.service.impl;
 
+import java.util.Objects;
+import static org.springframework.data.mongodb.core.FindAndModifyOptions.options;
+import static org.springframework.data.mongodb.core.query.Criteria.where;
+import static org.springframework.data.mongodb.core.query.Query.query;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.data.mongodb.core.query.Update;
+import org.springframework.stereotype.Service;
 
-import java.net.NetworkInterface;
-import java.security.SecureRandom;
-import java.time.Instant;
-import java.util.Enumeration;
+import ga.snatchkart.service.SequenceGenerator;
+import ga.snatchkkart.sequences.DatabaseSequence;
 
-/**
- * Distributed Sequence Generator.
- * Inspired by Twitter snowflake: https://github.com/twitter/snowflake/tree/snowflake-2010
- *
- * This class should be used as a Singleton.
- * Make sure that you create and reuse a Single instance of SequenceGenerator per machine in your distributed system cluster.
- */
-public class SequenceGeneratorServiceImpl {
-    private static final int TOTAL_BITS = 64;
-    private static final int EPOCH_BITS = 42;
-    private static final int MACHINE_ID_BITS = 10;
-    private static final int SEQUENCE_BITS = 12;
+@Service
+public class SequenceGeneratorServiceImpl implements SequenceGenerator {
 
-    private static final int maxMachineId = (int)(Math.pow(2, MACHINE_ID_BITS) - 1);
-    private static final int maxSequence = (int)(Math.pow(2, SEQUENCE_BITS) - 1);
+	@Autowired
+	private MongoOperations mongoOperations;
 
-    // Custom Epoch (January 1, 2015 Midnight UTC = 2015-01-01T00:00:00Z)
-    private static final long CUSTOM_EPOCH = 1420070400000L;
+	@Override
+	public long generateSequence(String seqName) {
+		DatabaseSequence counter = mongoOperations.findAndModify(query(where("_id").is(seqName)),
+				new Update().inc("seq", 1), options().returnNew(true).upsert(true), DatabaseSequence.class);
+		return !Objects.isNull(counter) ? counter.getSeq() : 1;
 
-    private final int machineId;
-
-    private long lastTimestamp = -1L;
-    private long sequence = 0L;
-
-    // Create Snowflake with a machineId
-    public SequenceGeneratorServiceImpl(int machineId) {
-        if(machineId < 0 || machineId > maxMachineId) {
-            throw new IllegalArgumentException(String.format("MachineId must be between %d and %d", 0, maxMachineId));
-        }
-        this.machineId = machineId;
-    }
-
-    // Let Snowflake generate a machineId
-    public SequenceGeneratorServiceImpl() {
-        this.machineId = createMachineId();
-    }
-
-
-    public long nextId() {
-        long currentTimestamp = timestamp();
-
-        synchronized (this) {
-            if(currentTimestamp < lastTimestamp) {
-                throw new IllegalStateException("Invalid System Clock!");
-            }
-
-            if (currentTimestamp == lastTimestamp) {
-                sequence = (sequence + 1) & maxSequence;
-                if(sequence == 0) {
-                    // Sequence Exhausted, wait till next millisecond.
-                    currentTimestamp = waitNextMillis(currentTimestamp);
-                }
-            } else {
-                // reset sequence for next millisecond
-                sequence = 0;
-            }
-
-            lastTimestamp = currentTimestamp;
-        }
-
-        long id = currentTimestamp << (TOTAL_BITS - EPOCH_BITS);
-        id |= (machineId << (TOTAL_BITS - EPOCH_BITS - MACHINE_ID_BITS));
-        id |= sequence;
-        return id;
-    }
-
-
-    // Get current timestamp in milliseconds, adjust for the custom epoch.
-    private static long timestamp() {
-        return Instant.now().toEpochMilli() - CUSTOM_EPOCH;
-    }
-
-    // Block and wait till next millisecond
-    private long waitNextMillis(long currentTimestamp) {
-        while (currentTimestamp == lastTimestamp) {
-            currentTimestamp = timestamp();
-        }
-        return currentTimestamp;
-    }
-
-    private int createMachineId() {
-        int machineId;
-        try {
-            StringBuilder sb = new StringBuilder();
-            Enumeration<NetworkInterface> networkInterfaces = NetworkInterface.getNetworkInterfaces();
-            while (networkInterfaces.hasMoreElements()) {
-                NetworkInterface networkInterface = networkInterfaces.nextElement();
-                byte[] mac = networkInterface.getHardwareAddress();
-                if (mac != null) {
-                    for(int i = 0; i < mac.length; i++) {
-                        sb.append(String.format("%02X", mac[i]));
-                    }
-                }
-            }
-            machineId = sb.toString().hashCode();
-        } catch (Exception ex) {
-            machineId = (new SecureRandom().nextInt());
-        }
-        machineId = machineId & maxMachineId;
-        return machineId;
-    }
+	}
 }

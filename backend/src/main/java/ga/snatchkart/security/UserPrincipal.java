@@ -8,6 +8,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import ga.snatchkart.enumration.UserRole;
 import ga.snatchkart.model.User;
 
+import java.math.BigInteger;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -15,16 +16,18 @@ import java.util.Map;
 
 public class UserPrincipal implements OAuth2User, UserDetails {
 	private static final long serialVersionUID = 1L;
-	private String id;
+	private Long id;
     private String email;
     private String password;
     private Collection<? extends GrantedAuthority> authorities;
+    private UserRole role;
     private Map<String, Object> attributes;
 
-    public UserPrincipal(String id, String email, String password, Collection<? extends GrantedAuthority> authorities) {
+    public UserPrincipal(Long id, String email, String password, UserRole role, Collection<? extends GrantedAuthority> authorities) {
         this.id = id;
         this.email = email;
         this.password = password;
+        this.role = role;
         this.authorities = authorities;
     }
 
@@ -36,6 +39,7 @@ public class UserPrincipal implements OAuth2User, UserDetails {
                 user.getId(),
                 user.getEmail(),
                 user.getPassword(),
+                user.getRole(),
                 authorities
         );
     }
@@ -46,7 +50,15 @@ public class UserPrincipal implements OAuth2User, UserDetails {
         return userPrincipal;
     }
 
-    public String getId() {
+    public UserRole getRole() {
+		return role;
+	}
+
+	public void setRole(UserRole role) {
+		this.role = role;
+	}
+
+	public Long getId() {
         return id;
     }
 

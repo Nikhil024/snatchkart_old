@@ -23,7 +23,7 @@ public class PublicProductsComponentController {
 		return productService.getAllProducts();
 	}
 
-	@GetMapping("/allWithOffers")
+	@GetMapping("/inOffer")
 	public List<Product> getAllProductsWithOffers() {
 		return productService.getAllProductsByOffers();
 	}

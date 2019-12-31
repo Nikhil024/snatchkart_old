@@ -1,6 +1,7 @@
 package ga.snatchkart.model;
 
 import java.io.Serializable;
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -19,7 +20,7 @@ public class Cart implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	private String id;
+	private BigInteger id;
 	@NotNull
 	private LocalDateTime cartDate;
 	private List<Product> products;

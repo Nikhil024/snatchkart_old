@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import ga.snatchkart.enumration.AuthProvider;
+import ga.snatchkart.enumration.UserRole;
 import ga.snatchkart.exception.BadRequestException;
 import ga.snatchkart.model.Login;
 import ga.snatchkart.model.SignUp;
@@ -25,6 +26,7 @@ import ga.snatchkart.payload.AuthResponse;
 import ga.snatchkart.repository.UserRepository;
 import ga.snatchkart.service.CookieService;
 import ga.snatchkart.service.JWTAuthenticationService;
+import ga.snatchkart.service.SequenceGenerator;
 
 @Service
 public class JWTAuthenticationServiceImpl implements JWTAuthenticationService {
@@ -40,6 +42,9 @@ public class JWTAuthenticationServiceImpl implements JWTAuthenticationService {
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
+	
+	@Autowired
+	private SequenceGenerator sequenceGeneratorService;
 	
 	@Override
 	public ResponseEntity<AuthResponse> login(Login loginRequest, HttpServletResponse response) {
@@ -63,11 +68,12 @@ public class JWTAuthenticationServiceImpl implements JWTAuthenticationService {
 
 		// Creating user's account
 		User user = new User();
+		user.setId(sequenceGeneratorService.generateSequence(User.SEQUENCE_NAME));
 		user.setName(signUpRequest.getName());
 		user.setEmail(signUpRequest.getEmail());
 		user.setPassword(signUpRequest.getPassword());
 		user.setProvider(AuthProvider.LOCAL);
-
+		user.setRole(UserRole.ROLE_USER);
 		user.setPassword(passwordEncoder.encode(user.getPassword()));
 
 		User result = userRepository.save(user);
