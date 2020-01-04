@@ -69,9 +69,22 @@
 			<version>2.3.0</version>
 		</dependency>
 
-
+		<!-- Start: Paytm Payment gateway integration -->
+		<dependency>
+			<groupId>com.paytm.pg</groupId>
+			<artifactId>paytm-pg</artifactId>
+			<version>0.0.1</version>
+		</dependency>
+		<!-- End: Paytm Payment gateway integration -->
 	</dependencies>
-
+	<!-- Start: Paytm Payment gateway integration Repo -->
+	<repositories>
+		<repository>
+			<id>my-repo1</id>
+			<url>http://artifactorypg.paytm.in/artifactory/libs-release</url>
+		</repository>
+	</repositories>
+	<!-- End: Paytm Payment gateway integration Repo -->
 	<build>
 		<plugins>
 			<plugin>
