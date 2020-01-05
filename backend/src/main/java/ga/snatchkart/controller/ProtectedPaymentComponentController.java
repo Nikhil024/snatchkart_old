@@ -17,13 +17,18 @@ public class ProtectedPaymentComponentController {
 	private PaymentService paymentService;
 
 	@PostMapping("/properties")
-	public ResponseEntity<PaytmPaymentApplicationProperties> getPaytmApplicationProperties() {
+	public ResponseEntity<PaytmPaymentApplicationProperties> getPaytmApplicationProperties() throws Exception {
 		return paymentService.getPaytmApplicationProperties();
 	}
 
 	@PostMapping("/capture")
 	public ResponseEntity<String> capturePayment() {
 		return paymentService.capturePayment();
+	}
+
+	@PostMapping("/demo")
+	public String demo() {
+		return null;
 	}
 
 }

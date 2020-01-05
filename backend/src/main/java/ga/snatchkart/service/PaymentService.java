@@ -7,6 +7,6 @@ import ga.snatchkart.config.PaytmPaymentApplicationProperties;
 public interface PaymentService {
 	
 	ResponseEntity<String> capturePayment();
-	ResponseEntity<PaytmPaymentApplicationProperties> getPaytmApplicationProperties();
+	ResponseEntity<PaytmPaymentApplicationProperties> getPaytmApplicationProperties() throws Exception;
 
 }

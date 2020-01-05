@@ -30,4 +30,6 @@ public class PaytmPaymentApplicationProperties {
 	private String paytmUrl;
 
 	private Map<String, String> details;
+	
+	private String checkSum;
 }

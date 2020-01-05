@@ -34,11 +34,10 @@ public class TokenProvider {
 				.compact();
 	}
 
-	public String getUserIdFromToken(String token) {
+	public Long getUserIdFromToken(String token) {
 		Claims claims = Jwts.parser().setSigningKey(appProperties.getAuth().getTokenSecret()).parseClaimsJws(token)
 				.getBody();
-
-		return claims.getSubject();
+		return Long.valueOf(claims.getSubject());
 	}
 
 	public boolean validateToken(String authToken) {
